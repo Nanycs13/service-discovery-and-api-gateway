@@ -1,0 +1,72 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+      routes:
+        - id: ms-teste
+          uri: lb://ms-teste
+          predicates:
+            - Path=/api/teste/**
+
+        - id: ms-auth
+          uri: lb://ms-auth
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - RewritePath=/api/auth/(?<segment>.*), /api/auth/${segment}
+
+        - id: ms-escola
+          uri: lb://ms-escola
+          predicates:
+            - Path=/api/escolas/**, /api/ies/**, /api/cursos/**, /api/matrizes/**, /api/disciplinas/**
+          filters:
+            - JwtAuthFilter
+
+        - id: ms-professor
+          uri: lb://ms-professor
+          predicates:
+            - Path=/api/professores/**
+          filters:
+            - JwtAuthFilter
+
+        - id: ms-monitoria
+          uri: lb://ms-monitoria
+          predicates:
+            - Path=/api/monitores/**, /api/monitorias/**
+          filters:
+            - JwtAuthFilter
+
+        - id: ms-relatorio
+          uri: lb://ms-relatorio
+          predicates:
+            - Path=/api/relatorios/**
+          filters:
+            - JwtAuthFilter
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
+app:
+  jwt:
+    secret: ${APP_JWT_SECRET:dXNhX3VtYV9jaGF2ZV9zZWNyZXRhX211aXRvX2xvbmdhX2Jhc2U2NA==}
+
+logging:
+  level:
+    "[org.springframework.cloud.gateway]": DEBUG
+    "[reactor.netty]": WARN

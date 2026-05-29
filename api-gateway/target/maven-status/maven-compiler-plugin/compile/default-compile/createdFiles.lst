@@ -1,0 +1,5 @@
+br\edu\ucsal\gateway\ApiGatewayApplication.class
+br\edu\ucsal\gateway\security\JwtAuthFilter$Config.class
+br\edu\ucsal\gateway\security\JwtUtil.class
+br\edu\ucsal\gateway\config\SecurityConfig.class
+br\edu\ucsal\gateway\security\JwtAuthFilter.class
